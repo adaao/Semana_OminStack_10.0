@@ -1,6 +1,13 @@
 const express = require('express');
 
+const mongoose = require('mongoose');
+
 const app = express();
+
+mongoose.connect('mongodb+srv://omnistack:40718665@cluster0-hiwos.mongodb.net/week10?retryWrites=true&w=majority', {
+   useNewUrlParser: true,
+   useUnifiedTopology: true
+});
 
 app.use(express.json());
 //Query params: request.query (filtros, paginação, ordenação, etc...)
