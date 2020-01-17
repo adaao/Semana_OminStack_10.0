@@ -1,0 +1,14 @@
+
+Entendendo React
+
+Componente: função que retorna algum conteúdo (html, js, css).
+   Componentes devem começar com letra maiúscula e deve haver apenas
+   um componente por arquivo.
+   "Bloco isolado de Html, Js, Css que não interfere na aplicação.
+
+
+Propriedade: Atributo que é passado para um Componente.
+   "Informações que um componente pai passa para um componente filho".
+
+
+Estado: Informações mantidas pelo componente (lembrar "imutabilidade").

@@ -1,16 +1,17 @@
-import React from 'react';
-
-//Entendendo React
-
-//Componente: funão que retorna algum conteúdo
-
-//Estado
-
-//Propriedade
+import React, { useState } from 'react';
 
 function App() {
+  const [counter, setCounter] = useState(0);
+  
+  function incrementCounter(){
+    setCounter(counter + 1);
+  }
+  
   return (
-    <h1>Hello, World!</h1>
+    <>
+      <h1>Counter {counter}</h1>
+      <button onClick={incrementCounter}>Incrementar</button>
+    </>
   );
 }
 
