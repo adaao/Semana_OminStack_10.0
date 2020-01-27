@@ -5,8 +5,11 @@ import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import { MaterialIcons } from '@expo/vector-icons';
 //import { requestPermissionAsync, getCurrentPositionAsync } from 'expo-location';
+import api from '../services/api'
+
 
 function Main({ navigation }){
+   const [devs, setDevs] = useState([]);
    const [currentRegion, setCurrentRegion] = useState(null);
    useEffect(() => {
       async function loadInitialPosition(){
@@ -33,28 +36,61 @@ function Main({ navigation }){
       loadInitialPosition();
    }, []);
 
+   async function loadDevs(){
+      const {latitude, longitude} = currentRegion;
+
+      const response = await api.get('/search', {
+         params: {
+            latitude,
+            longitude,
+            techs: 'ReactJs',
+         }   
+      });
+
+      setDevs(response.data.devs);
+
+   }
+
+   function handleRegionChanged(region){
+      setCurrentRegion(region);
+   }
+
    if(!currentRegion){
       return null;
    }
 
-   const ghun = 'adaao';
-
    return (
-            
       <>
-         <MapView initialRegion={currentRegion} style={styles.map}>
-            <Marker coordinate={currentRegion} title={ 'eu!' } description={ 'eu estou bem aqui' }>
-               <Image style={styles.avatar} source={{ uri: 'https://avatars3.githubusercontent.com/u/16517823?s=460&v=4' }}/>
+         <MapView 
+            onRegionChangeComplete={handleRegionChanged}
+            initialRegion={currentRegion} 
+            style={styles.map}
+         >
+            {devs.map(dev => (
+               <Marker
+                  key={dev._id} 
+                  coordinate={{
+                     longitude: dev.location.coordinates[0],
+                     latitude: dev.location.coordinates[1],
+                  }} 
+                  title={dev.name} 
+                  description={dev.bio}
+               >
+               <Image 
+                  style={styles.avatar} 
+                  source={{ uri: dev.avatar_url }}
+               />
                <Callout onPress={() => {
-                  navigation.navigate('Profile', { github_username: ghun});
+                  navigation.navigate('Profile', { github_username: dev.github_username});
                }} >
                   <View style={styles.callout}>
-                     <Text style={styles.devName}>{ghun}</Text>
-                     <Text style={styles.devBio} >Bio at Github</Text>
-                     <Text style={styles.devTechs} >Techs of the dev</Text>
+                     <Text style={styles.devName}>{dev.github_username}</Text>
+                     <Text style={styles.devBio} >{dev.bio}</Text>
+                     <Text style={styles.devTechs} >{dev.techs.join(', ')}</Text>
                   </View>
                </Callout>
             </Marker>
+            ))}
          </MapView>
 
          <View style={styles.searchForm}>
@@ -65,7 +101,7 @@ function Main({ navigation }){
                   autoCapitalize='words'
                   autoCorrect={false}
                />
-               <TouchableOpacity onPress={() => {}}  style={styles.loadButton} >
+               <TouchableOpacity onPress={loadDevs}  style={styles.loadButton} >
                   <MaterialIcons name='my-location' size={20} color='#FFF' />
                </TouchableOpacity>
          </View>
