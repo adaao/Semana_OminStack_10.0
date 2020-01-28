@@ -9,6 +9,8 @@ import api from '../services/api'
 
 
 function Main({ navigation }){
+   //const [value, onChangeText] = useState('');
+   const [techs, setTechs] = useState('');
    const [devs, setDevs] = useState([]);
    const [currentRegion, setCurrentRegion] = useState(null);
    useEffect(() => {
@@ -43,7 +45,8 @@ function Main({ navigation }){
          params: {
             latitude,
             longitude,
-            techs: 'ReactJs',
+            //techs: 'ReactJs',
+            techs
          }   
       });
 
@@ -100,6 +103,10 @@ function Main({ navigation }){
                   placeholderTextColor='#999'
                   autoCapitalize='words'
                   autoCorrect={false}
+                  value={techs}
+                  onChangeText={setTechs}
+                  //onChangeText={text => onChangeText(text)}
+                  //value={value}
                />
                <TouchableOpacity onPress={loadDevs}  style={styles.loadButton} >
                   <MaterialIcons name='my-location' size={20} color='#FFF' />
