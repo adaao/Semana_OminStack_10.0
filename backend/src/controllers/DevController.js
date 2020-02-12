@@ -1,7 +1,7 @@
 const axios = require('axios');
 const Dev = require('../models/Dev');
 const parseStringAsArray = require('../utils/parseStringAsArray');
-
+const { findConnections, sendMessage } = require('../websocket');
 
 module.exports = {
    async index(request, response){
@@ -35,11 +35,22 @@ module.exports = {
             techs: techsArray,
             location, 
          });
+
+         // Filtrar os Devs que estão a menos de 10 km
+         // e que o novo Dev tenha ao menos uma das techs filtradas
+         const sendSocketMessageTo = findConnections(
+            { latitude, longitude },
+            techsArray,
+         );
+
+         sendMessage(sendSocketMessageTo, 'new-dev', dev);
+
       }else{
          console.log('O usuário já foi cadastrado anteriormente');
       }
-   
+      
+      
       return response.json(dev);
-   }
-}
+   },
+};
 
